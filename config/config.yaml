@@ -1,0 +1,51 @@
+project:
+  name: "embedding_model_training"
+  version: "0.1.0"
+
+data_loading:
+  data_path: "data/raw/your_data.csv" # Path to your training data CSV
+  batch_size: 32
+  num_workers: 4
+  tokenizer:
+    tokenizer_name: "bert-base-uncased" # Or any HuggingFace tokenizer name
+    max_length: 128
+    masking_probability: 0.15
+
+model:
+  name: "transformer_embedding"
+  transformer_config:
+    hidden_size: 256
+    num_layers: 4
+    num_attention_heads: 8
+    intermediate_size: 512
+    dropout_prob: 0.1
+
+loss_function:
+  name: "info_nce"
+  temperature: 0.1
+
+optimizer:
+  name: "adamw"
+  learning_rate: 5.0e-5 # Initial learning rate - Optuna will tune this
+  weight_decay: 0.01
+
+regularization:
+  dropout_prob: 0.1
+  weight_decay: 0.01 # Redundant definition, already in optimizer, but kept for clarity if regularization section expands
+  gradient_clip_value: 1.0
+
+training:
+  epochs: 10
+  logging_level: "INFO" # "DEBUG", "INFO", "NONE"
+  experiment_name: "initial_experiment"
+  mixed_precision: true
+
+wandb:
+  project_name: "embedding-training-project"
+  entity: "your_wandb_entity"
+  log_perplexity: true
+
+optuna:
+  n_trials: 10 # Number of Optuna trials to run
+  startup_trials: 5 # Number of initial random trials before TPE sampler starts
+  
